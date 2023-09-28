@@ -1,4 +1,4 @@
-package com.dev.apprx
+package com.dev.apprx.login.ui
 
 import android.app.Activity
 import androidx.compose.foundation.Image
@@ -32,9 +32,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,17 +47,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dev.apprx.R
 
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(loginViewModel: LoginViewModel) {
     Box(
         Modifier
             .fillMaxSize()
             .padding(8.dp)
     ) {
         Header(Modifier.align(Alignment.TopEnd))
-        Body(Modifier.align(Alignment.Center))
+        Body(Modifier.align(Alignment.Center), loginViewModel)
         Footer(Modifier.align(Alignment.BottomCenter))
     }
 }
@@ -93,29 +94,27 @@ fun SignUp() {
 }
 
 @Composable
-fun Body(modifier: Modifier) {
-    var email by rememberSaveable {
-        mutableStateOf("")
-    }
+fun Body(modifier: Modifier, loginViewModel: LoginViewModel) {
 
-    var password by rememberSaveable {
-        mutableStateOf("")
-    }
 
-    var isLoginEnabled by rememberSaveable {
-        mutableStateOf(false)
-    }
+    val email : String by loginViewModel.email.observeAsState(initial = "")
+    val password : String by loginViewModel.password.observeAsState(initial = "")
+    val isLoginEnable:Boolean by loginViewModel.isLoginEnable.observeAsState(initial = false)
 
     Column(modifier = modifier) {
         ImageLogo(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.size(8.dp))
-        Email(email) { email = it }
+        Email(email) {
+            loginViewModel.onLoginChanged(email = it, password = password)
+        }
         Spacer(modifier = Modifier.size(4.dp))
-        Password(password) { password = it }
+        Password(password) {
+            loginViewModel.onLoginChanged(email = email, password = it)
+        }
         Spacer(modifier = Modifier.size(8.dp))
         //ForgotPassword(Modifier.align(Alignment.End))
         Spacer(modifier = Modifier.size(16.dp))
-        LoginButton(isLoginEnabled)
+        LoginButton(isLoginEnable, loginViewModel)
         Spacer(modifier = Modifier.size(2.dp))
         RegisterButton()
         Spacer(modifier = Modifier.size(16.dp))
@@ -187,20 +186,27 @@ fun RegisterButton() {
     }
 }
 
+
+
+
 @Composable
-fun LoginButton(loginEnabled: Boolean) {
+fun LoginButton(loginEnabled: Boolean, loginViewModel: LoginViewModel) {
     Button(
-        onClick = { /*TODO*/ },
+        onClick = { loginViewModel.onLoginSelected() },
         enabled = loginEnabled,
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
-            Color(color = 0xFF)
-        )
+            containerColor = Color(0xFF4EA8E9),
+            disabledContainerColor = Color(0xFF78C8F9),
+            contentColor = Color.White,
+            disabledContentColor = Color.White
+            )
     ) {
         Text(text = "Iniciar Sessión")
     }
 }
 
+/*
 @Composable
 fun ForgotPassword(modifier: Modifier) {
     Text(
@@ -211,6 +217,9 @@ fun ForgotPassword(modifier: Modifier) {
         modifier = modifier
     )
 }
+
+*/
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -230,7 +239,8 @@ fun Password(password: String, onTextChanged: (String) -> Unit) {
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         colors = TextFieldDefaults.run {
             textFieldColors(
-                textColor = Color(0xFFB2B2B2),
+                containerColor = Color(0xFFE7F0F7),
+                textColor = Color(0xFF992E2E),
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
             )
@@ -276,7 +286,8 @@ fun Email(email: String, onTextChanged: (String) -> Unit) {
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         colors = TextFieldDefaults.run {
             textFieldColors(
-                textColor = Color(0xFFB2B2B2),
+                containerColor = Color(0xFFE7F0F7),
+                textColor = Color(0xFF992E2E),
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
             )
