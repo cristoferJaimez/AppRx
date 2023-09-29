@@ -7,7 +7,7 @@ object RetrofitHelper {
 
     fun getRetrofit():Retrofit{
         return Retrofit.Builder()
-            .baseUrl("http://localhost:3000/")
+            .baseUrl("http://192.1.1.127:3000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
