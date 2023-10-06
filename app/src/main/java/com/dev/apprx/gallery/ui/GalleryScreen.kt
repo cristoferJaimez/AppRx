@@ -1,5 +1,6 @@
 package com.dev.apprx.gallery.ui
 
+import androidx.navigation.NavHostController
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,10 +51,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import com.dev.apprx.R
+import com.dev.apprx.rout.Navigation
+import com.dev.apprx.rout.Screen
+
+
 
 @Composable
 fun GalleryScreen() {
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,20 +70,23 @@ fun GalleryScreen() {
     }
 }
 
-@Preview(showBackground = true)
+
 @Composable
 fun Body() {
     // Crear una instancia de GalleryViewModel
     val galleryViewModel = GalleryViewModel()
+    val navController = rememberNavController()
     // Llamar a ImageBody con las instancias de GalleryViewModel y ContentResolver
-    ImageBody(galleryViewModel)
+    ImageBody(galleryViewModel, navController)
 }
 
 
 @Composable
-fun ImageBody(viewModel: GalleryViewModel) {
+fun ImageBody(viewModel: GalleryViewModel, navController: NavHostController) {
 
     val galleryImages by viewModel.getGalleryImages().observeAsState()
+        // Llama a la función para cargar las imágenes
+
 
 
     Column(
@@ -101,16 +112,16 @@ fun ImageBody(viewModel: GalleryViewModel) {
         ) {
             IconButton(
                 onClick = {
-                    // Acción al hacer clic en el botón de retroceso (puedes agregar la lógica aquí)
+
+
                 }
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Atrás",
                     Modifier.clickable {
-
                         Log.i("row", "touch row")
-
+                        navController.popBackStack()
                     })
             }
             Spacer(modifier = Modifier.width(16.dp))
