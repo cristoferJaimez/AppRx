@@ -11,8 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.dev.apprx.camera.ui.CameraScreen
+import com.dev.apprx.gallery.ui.GalleryScreen
 import com.dev.apprx.login.ui.LoginScreen
+import com.dev.apprx.register.ui.RegisterScreen
 import com.dev.apprx.login.ui.LoginViewModel
+import com.dev.apprx.menu.ui.MenuScreen
 import com.dev.apprx.ui.theme.AppRxTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,25 +33,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LoginScreen(loginViewModel)
+                    //LoginScreen(loginViewModel)
+                    //RegisterScreen()
+                    //CameraScreen()
+                    GalleryScreen()
+                    //MenuScreen()
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AppRxTheme {
-        Greeting("Android")
-    }
-}
