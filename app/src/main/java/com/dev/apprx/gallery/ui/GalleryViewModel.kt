@@ -9,6 +9,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,34 +18,36 @@ import com.google.firebase.inappmessaging.model.ImageData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class GalleryViewModel : ViewModel() {
-    private val galleryImages: MutableLiveData<List<ImageData>> = MutableLiveData()
+    private val galleryImages: MutableLiveData<List<GalleryImage>> = MutableLiveData()
 
     // Devuelve LiveData que puede ser observado desde la UI
-    fun getGalleryImages(): LiveData<List<ImageData>> {
+    fun getGalleryImages(): LiveData<List<GalleryImage>> {
         return galleryImages
     }
 
-    // Carga las imágenes de la galería
+    // Carga las imágenes de la galería del teléfono
     fun loadGalleryImages(contentResolver: ContentResolver) {
         viewModelScope.launch(Dispatchers.IO) {
-            val folderPath = "App Rx"
             val projection = arrayOf(
                 MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.DISPLAY_NAME,
                 MediaStore.Images.Media.DATE_ADDED
             )
-            val selection = "${MediaStore.Images.Media.DATA} like '%$folderPath%'"
+
             val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
             val uri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
-            val images = mutableListOf<ImageData>()
+            val images = mutableListOf<GalleryImage>()
 
             val cursor: Cursor? = contentResolver.query(
                 uri,
                 projection,
-                selection,
+                null,
                 null,
                 sortOrder
             )
@@ -62,11 +65,13 @@ class GalleryViewModel : ViewModel() {
                         id
                     )
 
-                    val bitmap: Bitmap? = loadBitmapFromUri(contentUri, contentResolver)
-                    images.add(ImageData(contentUri.toString(), bitmap))
-
-
+                    images.add(GalleryImage(contentUri, name, dateAdded))
                 }
+            }
+
+            // Imprime las URIs de imágenes cargadas
+            images.forEach { galleryImage ->
+                Log.d("GalleryViewModel", "Loaded image URI: ${galleryImage.uri}")
             }
 
             // Actualiza galleryImages con las imágenes obtenidas
@@ -74,16 +79,15 @@ class GalleryViewModel : ViewModel() {
         }
     }
 
-    private fun loadBitmapFromUri(uri: Uri, contentResolver: ContentResolver): Bitmap? {
-        return try {
-            val inputStream = contentResolver.openInputStream(uri)
-            BitmapFactory.decodeStream(inputStream)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
-        }
+    fun formatDate(dateInMillis: Long): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return sdf.format(Date(dateInMillis * 1000)) // Multiplica por 1000 para convertir de segundos a milisegundos
     }
-
-
-
 }
+
+data class GalleryImage(
+    val uri: Uri, // URI de la imagen
+    val name: String, // Nombre de la imagen
+    val dateAdded: Long // Fecha de captura de la imagen
+)
+

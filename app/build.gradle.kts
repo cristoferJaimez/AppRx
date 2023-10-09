@@ -57,13 +57,17 @@ android {
 dependencies {
     val navVersion = "2.7.0"
 
+    implementation ("androidx.compose.ui:ui:1.0.5")
+    implementation ("androidx.compose.foundation:foundation:1.0.5")
+
+
+
     implementation ("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation ("androidx.navigation:navigation-ui-ktx:$navVersion")
 
     implementation ("androidx.navigation:navigation-compose:$navVersion")
 
     implementation ("com.google.accompanist:accompanist-permissions:0.28.0")
-
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -80,7 +84,7 @@ dependencies {
 
 
     implementation ("androidx.camera:camera-core:1.3.0-rc01")
-    implementation ("androidx.camera:camera-camera2:1.3.0-rc01")
+    implementation ("androidx.camera:camera-camera2:1.4.0-alpha01")
     implementation ("androidx.camera:camera-lifecycle:1.3.0-rc01")
 
     implementation("androidx.camera:camera-view:1.2.3")

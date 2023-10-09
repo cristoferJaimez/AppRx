@@ -48,11 +48,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.dev.apprx.R
+import com.dev.apprx.rout.navigate.AppScreens
 
 
 @Composable
-fun LoginScreen(loginViewModel: LoginViewModel) {
+fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
     Box(
         Modifier
             .fillMaxSize()
@@ -69,7 +71,7 @@ fun LoginScreen(loginViewModel: LoginViewModel) {
             }
         } else {
             Header(Modifier.align(Alignment.TopEnd))
-            Body(Modifier.align(Alignment.Center), loginViewModel)
+            Body(Modifier.align(Alignment.Center), loginViewModel, navController)
             Footer(Modifier.align(Alignment.BottomCenter))
         }
     }
@@ -106,7 +108,7 @@ fun SignUp() {
 }
 
 @Composable
-fun Body(modifier: Modifier, loginViewModel: LoginViewModel) {
+fun Body(modifier: Modifier, loginViewModel: LoginViewModel, navController: NavController) {
 
 
     val email: String by loginViewModel.email.observeAsState(initial = "")
@@ -128,7 +130,7 @@ fun Body(modifier: Modifier, loginViewModel: LoginViewModel) {
         Spacer(modifier = Modifier.size(16.dp))
         LoginButton(isLoginEnable, loginViewModel)
         Spacer(modifier = Modifier.size(2.dp))
-        RegisterButton(loginViewModel)
+        RegisterButton(loginViewModel, navController)
         Spacer(modifier = Modifier.size(16.dp))
         LoginDivider()
         Spacer(modifier = Modifier.size(32.dp))
@@ -189,9 +191,9 @@ fun LoginDivider() {
 }
 
 @Composable
-fun RegisterButton(loginViewModel: LoginViewModel) {
+fun RegisterButton(loginViewModel: LoginViewModel, navController: NavController) {
     Button(
-        onClick = { loginViewModel.onRegisterSelect() },
+        onClick = { navController.navigate(route = "register_screen")},
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(text = "Registrar Farmacia")
